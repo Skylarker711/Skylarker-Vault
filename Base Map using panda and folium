@@ -1,0 +1,17 @@
+import folium
+import pandas
+
+df=pandas.read_csv("data.txt")  #Place your data in here 
+
+map = folium.map(location=[df['Lat'].mean(),df['Long'].mean()],zoom_start=6,tiles='stamen Terrain') #set the location and zoom levels of your base map
+
+def color(eleve):                                                #define your  parameters according to the data you are using
+    minimum=int(min(df['elevation']))
+    step=int((max(df['elevation']-min(df['elevation']))/3)
+    if elevation in range(minimum,minimum+step):
+        col='green'
+    elif elevation in range(minimum+step,mimimum+step*2):
+        col='orange'
+    else:
+        col='red'
+    return col
