@@ -3,9 +3,9 @@ import pandas
 
 df=pandas.read_csv("data.txt")  #Place your data in here 
 
-map = folium.map(location=[df['Lat'].mean(),df['Long'].mean()],zoom_start=6,tiles='stamen Terrain') #set the location and zoom levels of your base map
+map = folium.map(location=[df['lat'].mean(),df['long'].mean()],zoom_start=6,tiles='Mapbox bright') #set the location and zoom levels of your base map
 
-def color(eleve):                                                #define your  parameters according to the data you are using
+def color(eleve):        #define your  parameters according to the data you are using
     minimum=int(min(df['elevation']))
     step=int((max(df['elevation']-min(df['elevation']))/3)
     if elevation in range(minimum,minimum+step):
@@ -15,3 +15,49 @@ def color(eleve):                                                #define your  p
     else:
         col='red'
     return col
+
+fg=folium.FeaturedGroup(name="your data")  
+
+for lat,lon,name,elev in zip(df['lat'],df['lon'],df['name'],df['elevation']):
+    fg.add_child(folium.Marker(location=[lat,lon],popup=name,icon=folium.Icon(color=(elev),icon_color='green')))
+
+map.add_child(fg)
+
+map.add_child(folium.GeoJson(data=open('data.json'),
+name='data',
+style_function=lambda x: {'fillcolor':'green'if x['properties']['pop2010']<=1000000 else 'orange' if 1000000<x['properties']['pop2010']<2000000 else 'red'}))
+
+map.add_child(folium.LayerControl())
+
+map.save(outfile='test.html')import folium
+import pandas
+
+df=pandas.read_csv("data.txt")  #Place your data in here 
+
+map = folium.map(location=[df['lat'].mean(),df['long'].mean()],zoom_start=6,tiles='Mapbox bright') #set the location and zoom levels of your base map
+
+def color(eleve):        #define your  parameters according to the data you are using
+    minimum=int(min(df['elevation']))
+    step=int((max(df['elevation']-min(df['elevation']))/3)
+    if elevation in range(minimum,minimum+step):
+        col='green'
+    elif elevation in range(minimum+step,mimimum+step*2):
+        col='orange'
+    else:
+        col='red'
+    return col
+
+fg=folium.FeaturedGroup(name="your data")  
+
+for lat,lon,name,elev in zip(df['lat'],df['lon'],df['name'],df['elevation']):
+    fg.add_child(folium.Marker(location=[lat,lon],popup=name,icon=folium.Icon(color=(elev),icon_color='green')))
+
+map.add_child(fg)
+
+map.add_child(folium.GeoJson(data=open('data.json'),
+name='data',
+style_function=lambda x: {'fillcolor':'green'if x['properties']['pop2010']<=1000000 else 'orange' if 1000000<x['properties']['pop2010']<2000000 else 'red'}))
+
+map.add_child(folium.LayerControl())
+
+map.save(outfile='test.html')
